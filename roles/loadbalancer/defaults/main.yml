@@ -1,0 +1,5 @@
+---
+sites:
+  wordpress:
+    frontend: 80
+    backend: 80

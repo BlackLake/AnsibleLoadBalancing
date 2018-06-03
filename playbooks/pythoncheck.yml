@@ -1,0 +1,5 @@
+---
+ - hosts: all
+   become: yes
+   tasks:
+    - apt: name=python state=present

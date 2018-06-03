@@ -1,0 +1,14 @@
+[loadbalancer]
+
+loadbalancer ansible_ssh_port=10818 ansible_ssh_host=93.94.254.231 ansible_user=root
+
+[wordpress]
+
+wordpress1 ansible_ssh_port=10820 ansible_ssh_host=93.94.254.231 ansible_user=root
+
+wordpress2 ansible_ssh_port=10822 ansible_ssh_host=93.94.254.231 ansible_user=root
+
+[mysql]
+
+mysql ansible_ssh_port=10824 ansible_ssh_host=93.94.254.231 ansible_user=root
+
