@@ -11,8 +11,6 @@
     state: present 
     update_cache: yes
 
-
-
 - name: Ensure mysql listening on all ports
   lineinfile: dest=/etc/mysql/my.cnf regexp=^bind-address
               line="bind-address = {{ ansible_eth1.ipv4.address }}"
@@ -30,4 +28,4 @@
 
 - name: create user
   mysql_user: name={{ db_user_name }} password={{ db_user_pass }} priv={{ db_name }}.*:ALL
-              host='{{ db_user_host }}' state=present
+              host='{{ ansible_hostname }}' state=present
