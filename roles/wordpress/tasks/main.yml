@@ -6,23 +6,52 @@
     validate_certs=no 
   become: yes
 
+- name: ensure var/www/wordpress directory exists
+  file:
+    path: /var/www/wordpress
+    state: directory
+
 - name: Extract WordPress  
-  unarchive: src=/tmp/wordpress.tar.gz dest=/usr/share/nginx/html copy=no 
+  unarchive: src=/tmp/wordpress.tar.gz dest=/var/www/ copy=no 
   become: yes
 
+- name: rename wordpress to html
+  command: mv /var/www/wordpress /var/www/html
+
 - name: Copy sample config file
-  command: mv /usr/share/nginx/html/wordpress/wp-config-sample.php /usr/share/nginx/html/wordpress/wp-config.php creates=/usr/share/nginx/html/wordpress/wp-config.php
+  command: mv /var/www/html/wp-config-sample.php /var/www/html/wp-config.php creates=/var/www/html/wp-config.php
   become: yes
 
 - name: Update WordPress config file
   lineinfile:
-    dest=/usr/share/nginx/html/wordpress/wp-config.php
+    path=/var/www/html/wp-config.php
     regexp="{{ item.regexp }}"
     line="{{ item.line }}"
   with_items:
     - {'regexp': "define\\('DB_NAME', '(.)+'\\);", 'line': "define('DB_NAME', '{{db_name}}');"}
     - {'regexp': "define\\('DB_USER', '(.)+'\\);", 'line': "define('DB_USER', '{{db_user_name}}');"}
     - {'regexp': "define\\('DB_PASSWORD', '(.)+'\\);", 'line': "define('DB_PASSWORD', '{{db_user_pass}}');"}
-    - {'regexp': "define\\('DB_HOST', '(.)+'\\);", 'line': "define('DB_HOST', '{{db_user_host}}');"}
+    - {'regexp': "define\\('DB_HOST', '(.)+'\\);", 'line': "define('DB_HOST', '{{ ansible_hostname }}');"}
   become: yes
+
+- name: get WordPress secret keys
+  shell: curl -s https://api.wordpress.org/secret-key/1.1/salt/
+  register: secretkeys
+
+- replace:
+    path: /var/www/html/wp-config.php
+    regexp: 'define\((.|\n)+put your unique phrase here(.)+\);'
+    replace: "{{ secretkeys.stdout }}"
+
+- file:
+    path: /var/www/html/*
+    owner: root
+    group: www-data
+    recurse: yes
+
+- file:
+    path: /var/www/html/wp-content/uploads
+    state: directory
+    group: www-data
+    recurse: yes
 

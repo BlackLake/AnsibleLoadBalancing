@@ -2,4 +2,17 @@
 
 - name: Install PHP-Fpm
   become: yes
-  apt: name=php5-fpm state=present
+  apt: name={{ item }} state=present
+  with_items:
+    - php5-fpm
+    - php5-mysql
+    - php5-gd
+    - libssh2-php
+ 
+- lineinfile: 
+    path=/etc/php5/fpm/php.ini
+    regexp='^;cgi.fix_pathinfo='
+    line=';cgi.fix_pathinfo=0'
+
+- name: restart PHP-Fpm
+  service: name=php5-fpm state=restarted enabled=yes

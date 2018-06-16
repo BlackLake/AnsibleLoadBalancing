@@ -1,0 +1,27 @@
+- hosts: wordpress
+  tasks:
+    - name: Ensure nginx service is stopped
+      service:
+        name: nginx
+        state: stopped
+      ignore_errors: yes
+
+    - name: Remove nginx
+      apt: name={{ item }} state=absent purge=yes
+      become: yes
+      with_items:
+        - nginx
+        - nginx-common
+        
+    - name: Clean up files created by nginx-simple
+      file:
+        name: "{{ item }}"
+        state: absent
+      with_items:
+        - /etc/nginx
+        - /usr/share/nginx
+        - /var/www
+
+    - name: Autoremove
+      apt: autoremove=yes
+      become: yes
