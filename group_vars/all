@@ -1,8 +1,7 @@
 ---
 db_name: demo
-db_user_name: demo
-db_user_pass: demo
-
+db_user: demo
+db_pass: demo
 
 
 

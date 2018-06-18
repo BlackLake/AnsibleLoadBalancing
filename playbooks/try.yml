@@ -1,8 +1,7 @@
-- hosts: wordpress
-  tasks:
-    - name: get WordPress secret keys
-      shell: curl -s https://api.wordpress.org/secret-key/1.1/salt/
-      register: secretkeys
-
-    - debug:
-        msg: "{{ secretkeys.stdout_lines|list }}"
+---
+  - hosts: wordpress
+    tasks:
+      - name: Clean /var/www/html/*
+        file:
+          state: absent
+          path: /var/www/html

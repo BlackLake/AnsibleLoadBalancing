@@ -11,9 +11,15 @@
     state: present 
     update_cache: yes
 
-- name: Ensure mysql listening on all ports
-  lineinfile: dest=/etc/mysql/my.cnf regexp=^bind-address
-              line="bind-address = {{ ansible_eth1.ipv4.address }}"
+- replace:
+    path: /etc/mysql/my.cnf
+    regexp: '^bind-address(.)+$'
+    replace: "bind-address = {{ ansible_eth1.ipv4.address }}"
+
+- replace:
+    path: /etc/mysql/debian.cnf
+    regexp: '^host(.)+$'
+    replace: "host     = {{ ansible_eth1.ipv4.address }}"
 
 - name: Start the MySQL service
   become: yes
@@ -27,5 +33,8 @@
   state: started
 
 - name: create user
-  mysql_user: name={{ db_user_name }} password={{ db_user_pass }} priv={{ db_name }}.*:ALL
-              host='{{ ansible_hostname }}' state=present
+  mysql_user: name={{ db_user_name }} password={{ db_user_pass }} priv={{ db_name }}.*:ALL,GRANT
+              host='{{ db_user_host }}' state=present
+
+- name: restart mysql
+  service: name=mysql state=restarted

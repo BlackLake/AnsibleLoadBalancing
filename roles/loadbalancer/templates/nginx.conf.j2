@@ -1,13 +1,12 @@
-upstream {{ item.key }} {
-{% for server in groups.wordpress %}
-    server {{ server }}:{{ item.value.backend }};
-{% endfor %}
+upstream backend  {
+	server 93.94.254.231:10821;
+	server 93.94.254.231:10823;
 }
 
 server {
-    listen {{ item.value.frontend }};
-
+    listen 80;
+    
     location / {
-        proxy_pass http://{{ item.key }};
+        proxy_pass https://backend;
     }
 }

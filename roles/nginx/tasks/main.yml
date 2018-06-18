@@ -14,12 +14,9 @@
 - name: ensure nginx started
   service: name=nginx state=started enabled=yes
 
-- name: configure nginx sites
-  template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/default mode=0644
-
 - name: add wordpress nginx site
   template: src=nginx.conf.wordpress.j2 dest=/etc/nginx/sites-available/worpress mode=0644
 
 - name: activate nginx sites
-  file: src=/etc/nginx/sites-available/worpress dest=/etc/nginx/sites-enabled/worpress state=link
+  file: src=/etc/nginx/sites-available/worpress dest=/etc/nginx/sites-enabled/default state=link
   notify: restart nginx
