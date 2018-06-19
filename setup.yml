@@ -1,0 +1,5 @@
+---
+#- import_playbook: reset.yml
+- import_playbook: mysql.yml
+- import_playbook: wordpress.yml
+- import_playbook: loadbalancer.yml 

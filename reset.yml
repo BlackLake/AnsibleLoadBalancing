@@ -1,0 +1,4 @@
+---
+- import_playbook: playbooks/resetmysql.yml
+- import_playbook: playbooks/resetwebservers.yml
+- import_playbook: playbooks/resetloadbalancer.yml
