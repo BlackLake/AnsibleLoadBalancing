@@ -1,0 +1,22 @@
+- hosts: mysql
+  tasks:
+  - name: Dump database to hostname.sql
+    mysql_db:
+      state: dump
+      name: "{{db_name}}"
+      target: /tmp/{{ inventory_hostname }}.sql
+
+  - name: restart mysql
+    service: name=mysql state=restarted
+
+- hosts: wordpress
+  tasks:
+  - name: restart nginx
+    service: name=nginx state=restarted enabled=yes
+  - name: restart php5-fpm
+    service: name=php5-fpm state=restarted enabled=yes
+
+- hosts: loadbalancer
+  tasks:
+  - name: restart nginx
+    service: name=nginx state=restarted enabled=yes

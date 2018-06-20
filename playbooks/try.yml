@@ -1,7 +1,0 @@
----
-  - hosts: wordpress
-    tasks:
-      - name: Clean /var/www/html/*
-        file:
-          state: absent
-          path: /var/www/html
